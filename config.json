@@ -6,19 +6,14 @@
     },
     "channels": [
         {
-            "name": "90 Plus",
-            "slug": "90plus",
-            "url": "https://dlive.tv/TV90PLUS"  
-        },
-        {
             "name": "Kanal D",
             "slug": "kanald",
             "url": "https://www.kanald.com.tr/canli-yayin"
         },
         {
-            "name": "taraftarium",
-            "slug": "taraftar24",
-            "url": "https://taraftarium-24.co/yayin"
+            "name": "chips",
+            "slug": "chips",
+            "url": "https://kick.com/chips"
         }
     ]
 }
