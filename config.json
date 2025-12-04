@@ -64,6 +64,11 @@
             "name": "TV Kayseri",
             "slug": "tvkayseri",
             "url": "https://www.twitch.tv/tvkayseri"
+        },
+        {
+            "name": "Kanal D",
+            "slug": "kanald",
+            "url": "https://www.kanald.com.tr/canli-yayin"
         }
     ]
 }
