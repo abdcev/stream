@@ -64,6 +64,11 @@
             "name": "ATV",
             "slug": "atv",
             "url": "https://www.atv.com.tr/canli-yayin"
+        },
+        {
+            "name": "TV8,5",
+            "slug": "tv8bucuk",
+            "url": "https://www.tv8bucuk.com/tv8-5-canli-yayin"
         }
     ]
 }
