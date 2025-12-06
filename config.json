@@ -53,7 +53,7 @@
         {
             "name": "Qazaqstan TV",
             "slug": "qazaqstan",
-            "url": "https://qazaqstan.tv/ru/live"
+            "url": "https://qazaqstantv-stream.qazcdn.com/qazaqstantv/qazaqstantv/playlist.m3u8"
         }
     ]
 }
