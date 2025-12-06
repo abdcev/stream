@@ -54,6 +54,11 @@
             "name": "Habertürk",
             "slug": "habertürk",
             "url": "https://m.haberturk.com/canliyayin"
+        },
+        {
+            "name": "Habertürk",
+            "slug": "habertürk",
+            "url": "https://www.tabii.com/watch/live/trtbelgesel"
         }
     ]
 }
