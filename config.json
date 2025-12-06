@@ -59,6 +59,11 @@
             "name": "Qazaqstan TV",
             "slug": "qazaqstan",
             "url": "https://qazaqstantv-stream.qazcdn.com/qazaqstantv/qazaqstantv/playlist.m3u8"
+        },
+        {
+            "name": "ATV",
+            "slug": "atv",
+            "url": "https://www.atv.com.tr/canli-yayin"
         }
     ]
 }
