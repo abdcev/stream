@@ -11,15 +11,49 @@
             "url": "https://www.kanald.com.tr/canli-yayin"
         },
         {
-            "name": "TRT 1",
-            "slug": "trt1",
-            "url": "https://www.tabii.com/tr/watch/live/trt1?trackId=150002"
+            "name": "Show TV",
+            "slug": "showtv",
+            "url": "https://www.showtv.com.tr/canli-yayin"
         },
         {
-            "name": "HZ Yusuf",
-            "slug": "hzyusuf",
-            "url": "https://www.youtube.com/watch?v=FYtCOZ7S_ls"
+            "name": "ATV",
+            "slug": "atv",
+            "url": "https://www.atv.com.tr/canli-yayin"
+        },
+        {
+            "name": "NOW",
+            "slug": "now",
+            "url": "https://www.nowtv.com.tr/canli-yayin"
+        },
+        {
+            "name": "TV8",
+            "slug": "tv8",
+            "url": "https://www.tv8.com.tr/canli-yayin"
+        },
+        {
+            "name": "Beyaz TV",
+            "slug": "beyaztv",
+            "url": "https://www.beyaztv.com.tr/canli-yayin/"
+        },
+        {
+            "name": "TLC",
+            "slug": "tlc",
+            "url": "https://www.tlctv.com.tr/canli-izle"
+        },
+        {
+            "name": "DMAX",
+            "slug": "dmax",
+            "url": "https://www.dmax.com.tr/canli-izle"
+        },
+        {
+            "name": "NTV",
+            "slug": "NTV",
+            "url": "https://www.ntv.com.tr/canli-yayin/ntv"
+        },
+        {
+            "name": "Habertürk",
+            "slug": "habertürk",
+            "url": "https://m.haberturk.com/canliyayin"
         }
-
     ]
 }
