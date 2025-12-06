@@ -11,9 +11,15 @@
             "url": "https://www.kanald.com.tr/canli-yayin"
         },
         {
-            "name": "chips",
-            "slug": "chips",
-            "url": "https://kick.com/chips"
+            "name": "TRT 1",
+            "slug": "trt1",
+            "url": "https://www.tabii.com/tr/watch/live/trt1?trackId=150002"
+        },
+        {
+            "name": "HZ Yusuf",
+            "slug": "hzyusuf",
+            "url": "https://www.youtube.com/watch?v=FYtCOZ7S_ls"
         }
+
     ]
 }
