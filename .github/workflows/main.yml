@@ -1,10 +1,17 @@
 name: run main.py
+
 on:
+  push:
+    branches:
+      - main          # değişiklikleri main branch'e push edince çalışsın
+    paths:
+      - 'main.py'     # sadece main.py değişince tetiklensin
+      - 'config.json' # istersen bunu da ekleyebilirsin
   schedule:
     - cron: '0 */2 * * *'
   pull_request:
-      branches:
-        - main
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -18,7 +25,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-            python-version: '3.12'  # Use stable version
+          python-version: '3.12'  # Use stable version
       
       - name: Install dependencies
         run: |
