@@ -7,23 +7,90 @@ import traceback
 
 def info_to_text(stream_info, url):
     text = '#EXT-X-STREAM-INF:'
-    if stream_info.program_id:
-        text = text + 'PROGRAM-ID=' + str(stream_info.program_id) + ','
-    if stream_info.bandwidth:
-        text = text + 'BANDWIDTH=' + str(stream_info.bandwidth) + ','
-    if stream_info.codecs:
-        text = text + 'CODECS="'
+    if getattr(stream_info, "program_id", None):
+        text += 'PROGRAM-ID=' + str(stream_info.program_id) + ','
+    if getattr(stream_info, "bandwidth", None):
+        text += 'BANDWIDTH=' + str(stream_info.bandwidth) + ','
+    if getattr(stream_info, "codecs", None):
         codecs = stream_info.codecs
-        for i in range(0, len(codecs)):
-            text = text + codecs[i]
-            if len(codecs) - 1 != i:
-                text = text + ','
-        text = text + '",'
-    if stream_info.resolution.width:
-        text = text + 'RESOLUTION=' + str(stream_info.resolution.width) + 'x' + str(stream_info.resolution.height) 
+        if codecs:
+            text += 'CODECS="'
+            for i in range(len(codecs)):
+                text += codecs[i]
+                if i != len(codecs) - 1:
+                    text += ','
+            text += '",'
+    if getattr(stream_info, "resolution", None) and stream_info.resolution.width:
+        text += 'RESOLUTION=' + str(stream_info.resolution.width) + 'x' + str(stream_info.resolution.height)
 
-    text = text + "\n" + url + "\n"
+    text += "\n" + url + "\n"
     return text
+
+
+def build_from_multivariant(hls_stream):
+    """
+    multivariant varsa master ve best playlist üretir.
+    Yoksa (None ise) (None, None) döner.
+    """
+    mv = getattr(hls_stream, "multivariant", None)
+    if mv is None or not getattr(mv, "playlists", None):
+        return None, None
+
+    playlists = mv.playlists
+
+    previous_res_height = 0
+    master_text = ''
+    best_text = ''
+
+    for playlist in playlists:
+        uri = playlist.uri
+        info = playlist.stream_info
+
+        # Sadece video akışları
+        if getattr(info, "video", None) == "audio_only":
+            continue
+
+        sub_text = info_to_text(info, uri)
+
+        if info.resolution and info.resolution.height > previous_res_height:
+            master_text = sub_text + master_text
+            best_text = sub_text
+            previous_res_height = info.resolution.height
+        else:
+            master_text = master_text + sub_text
+
+    if not master_text:
+        return None, None
+
+    version = mv.version
+    header = ''
+    if version:
+        header = '#EXT-X-VERSION:' + str(version) + "\n"
+
+    master_text = '#EXTM3U\n' + header + master_text
+    best_text = '#EXTM3U\n' + header + best_text
+
+    return master_text, best_text
+
+
+def build_simple_best(best_stream):
+    """
+    multivariant yoksa (tek kalite .m3u8 gibi),
+    tek URL'lik basit bir playlist üretir.
+    """
+    url = None
+    try:
+        url = best_stream.to_url()
+    except Exception:
+        url = getattr(best_stream, "url", None)
+
+    if not url:
+        return None, None
+
+    text = '#EXTM3U\n' + url + '\n'
+    # Hem master hem best aynı olsun
+    return text, text
+
 
 def main():
     print("=== Starting stream processing ===")
@@ -33,29 +100,37 @@ def main():
     print(f"Loading config from: {config_file}")
     
     try:
-        f = open(config_file, "r")
-        config = json.load(f)
-        f.close()
+        with open(config_file, "r", encoding="utf-8") as f:
+            config = json.load(f)
     except Exception as e:
         print(f"❌ ERROR loading config file: {e}")
         sys.exit(1)
 
     # Getting output options and creating folders
-    folder_name = config["output"]["folder"]
-    best_folder_name = config["output"]["bestFolder"]
-    master_folder_name = config["output"]["masterFolder"]
+    folder_name = config["output"]["folder"]          # streams
+    best_folder_name = config["output"]["bestFolder"] # best
+    master_folder_name = config["output"]["masterFolder"]  # "" veya "master"
+
     current_dir = os.getcwd()
     root_folder = os.path.join(current_dir, folder_name)
+
+    # masterFolder boşsa master'ları direkt root_folder'a yaz
+    if master_folder_name:
+        master_folder = os.path.join(root_folder, master_folder_name)
+    else:
+        master_folder = root_folder
+
     best_folder = os.path.join(root_folder, best_folder_name)
-    master_folder = os.path.join(root_folder, master_folder_name)
     
-    print(f"Creating folders:")
-    print(f"  Root: {root_folder}")
-    print(f"  Best: {best_folder}")
+    print("Creating folders:")
+    print(f"  Root:   {root_folder}")
     print(f"  Master: {master_folder}")
+    print(f"  Best:   {best_folder}")
     
+    os.makedirs(root_folder, exist_ok=True)
     os.makedirs(best_folder, exist_ok=True)
-    os.makedirs(master_folder, exist_ok=True)
+    if master_folder != root_folder:
+        os.makedirs(master_folder, exist_ok=True)
 
     channels = config["channels"]
     print(f"\n=== Processing {len(channels)} channels ===\n")
@@ -71,7 +146,6 @@ def main():
         print(f"  URL: {url}")
         
         try:
-            # Get streams and playlists
             streams = streamlink.streams(url)
             
             if not streams:
@@ -85,70 +159,42 @@ def main():
                 fail_count += 1
                 continue
             
-            playlists = streams['best'].multivariant.playlists
+            best_stream = streams['best']
 
-            # Text preparation
-            previous_res_height = 0
-            master_text = ''
-            best_text = ''
+            # Önce multivariant'tan üretmeyi dene
+            master_text, best_text = build_from_multivariant(best_stream)
 
-            # Check http/https options
-            http_flag = False
-            if url.startswith("http://"):
-                plugin_name, plugin_type, given_url = streamlink.session.Streamlink().resolve_url(url)
-                http_flag = True
+            # Olmazsa basit tek URL playlist üret
+            if not master_text:
+                master_text, best_text = build_simple_best(best_stream)
 
-            for playlist in playlists:
-                uri = playlist.uri
-                info = playlist.stream_info
-                # Sorting sub-playlist based on resolution
-                if info.video != "audio_only": 
-                    sub_text = info_to_text(info, uri)
-                    if info.resolution.height > previous_res_height:
-                        master_text = sub_text + master_text
-                        best_text = sub_text
-                    else:
-                        master_text = master_text + sub_text
-                    previous_res_height = info.resolution.height
-            
-            # Necessary values for HLS
-            if master_text:
-                if streams['best'].multivariant.version:
-                    master_text = '#EXT-X-VERSION:' + str(streams['best'].multivariant.version) + "\n" + master_text
-                    best_text = '#EXT-X-VERSION:' + str(streams['best'].multivariant.version) + "\n" + best_text
-                master_text = '#EXTM3U\n' + master_text
-                best_text = '#EXTM3U\n' + best_text
-
-            # HTTPS -> HTTP for cinergroup plugin
-            if http_flag:
-                if plugin_name == "cinergroup":
-                    master_text = master_text.replace("https://", "http://")
-                    best_text = best_text.replace("https://", "http://")
-
-            # File operations
-            master_file_path = os.path.join(master_folder, channel["slug"] + ".m3u8")
-            best_file_path = os.path.join(best_folder, channel["slug"] + ".m3u8")
-
-            if master_text:
-                with open(master_file_path, "w+") as master_file:
-                    master_file.write(master_text)
-
-                with open(best_file_path, "w+") as best_file:
-                    best_file.write(best_text)
-                
-                print(f"  ✅ Success - Files created")
-                success_count += 1
-            else:
+            if not master_text:
                 print(f"  ⚠️  No content generated for {slug}")
+                # Hatalı dosya varsa sil
+                master_file_path = os.path.join(master_folder, channel["slug"] + ".m3u8")
+                best_file_path = os.path.join(best_folder, channel["slug"] + ".m3u8")
                 if os.path.isfile(master_file_path):
                     os.remove(master_file_path)
                 if os.path.isfile(best_file_path):
                     os.remove(best_file_path)
                 fail_count += 1
+                continue
+
+            master_file_path = os.path.join(master_folder, channel["slug"] + ".m3u8")
+            best_file_path = os.path.join(best_folder, channel["slug"] + ".m3u8")
+
+            with open(master_file_path, "w", encoding="utf-8") as master_file:
+                master_file.write(master_text)
+
+            with open(best_file_path, "w", encoding="utf-8") as best_file:
+                best_file.write(best_text)
+            
+            print(f"  ✅ Success - Files created")
+            success_count += 1
                 
         except Exception as e:
             print(f"  ❌ ERROR processing {slug}: {str(e)}")
-            print(f"  {traceback.format_exc()}")
+            print(traceback.format_exc())
             
             master_file_path = os.path.join(master_folder, channel["slug"] + ".m3u8")
             best_file_path = os.path.join(best_folder, channel["slug"] + ".m3u8")
@@ -162,6 +208,7 @@ def main():
     print(f"✅ Successful: {success_count}")
     print(f"❌ Failed: {fail_count}")
     print(f"Total: {len(channels)}")
+
 
 if __name__=="__main__": 
     main()
