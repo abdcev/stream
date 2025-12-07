@@ -7,9 +7,11 @@ on:
     paths:
       - 'main.py'
       - 'tabii_scraper.py'
+      - 'tabii_scrapper.py'
       - 'config.json'
+      - '.github/workflows/**'
   schedule:
-    - cron: '0 */2 * * *'   # 2 saatte bir
+    - cron: '0 */2 * * *'   # Her 2 saatte bir
   pull_request:
     branches:
       - main
@@ -24,6 +26,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # rebase/pull için tam history lazım
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -33,9 +37,15 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          # Playwright browser'larını kur
-          python -m playwright install --with-deps chromium
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            pip install streamlink playwright
+          fi
+          # Playwright kullanıyorsan tarayıcıyı kur
+          if python -c "import importlib; importlib.util.find_spec('playwright') is not None" 2>/dev/null; then
+            python -m playwright install --with-deps chromium
+          fi
 
       - name: Debug - Config and files
         run: |
@@ -48,8 +58,15 @@ jobs:
 
       - name: Run Tabii / TV8.5 scraper
         run: |
-          echo "=== Running tabii_scraper.py ==="
-          python tabii_scraper.py config.json
+          if [ -f tabii_scraper.py ]; then
+            echo "=== Running tabii_scraper.py ==="
+            python tabii_scraper.py config.json
+          elif [ -f tabii_scrapper.py ]; then
+            echo "=== Running tabii_scrapper.py ==="
+            python tabii_scrapper.py config.json
+          else
+            echo "No tabii scraper script found, skipping."
+          fi
 
       - name: Run Streamlink updater
         run: |
@@ -74,11 +91,20 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+
           git add -A
           git status
+
+          # Değişiklik yoksa commit/push yapma
           if git diff --quiet && git diff --staged --quiet; then
             echo "No changes to commit."
-          else
-            git commit -m "updated streams $(date +'%Y-%m-%d %H:%M:%S')"
-            git push
+            exit 0
           fi
+
+          git commit -m "updated streams $(date +'%Y-%m-%d %H:%M:%S')"
+
+          # Remote tarafındaki son değişiklikleri al, üstüne kendi commit'ini rebase et
+          git pull --rebase origin main
+
+          # Son hali main'e push et
+          git push origin HEAD:main
