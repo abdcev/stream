@@ -37,20 +37,18 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          # requirements.txt varsa onu kur
           if [ -f requirements.txt ]; then
             pip install -r requirements.txt
-          else
-            pip install streamlink playwright
           fi
-          # Playwright kullanıyorsan tarayıcıyı kur
-          if python -c "import importlib; importlib.util.find_spec('playwright') is not None" 2>/dev/null; then
-            python -m playwright install --with-deps chromium
-          fi
+          # Yine de garanti olsun diye bunları ayrıca kur
+          pip install streamlink playwright
+          python -m playwright install --with-deps chromium
 
       - name: Debug - Config and files
         run: |
           echo "=== Config file content ==="
-          cat config.json
+          cat config.json || echo "config.json bulunamadı"
           echo ""
           echo "=== Current directory ==="
           pwd
