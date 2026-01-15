@@ -49,6 +49,10 @@
             "name": "Chips",
             "slug": "chips",
             "url": "https://kick.com/chips"
-        }
+        },
+        {
+            "name": "TV 2",
+            "slug": "teve2",
+            "url": "https://www.tv2.com.tr/canli-yayin" 
     ]
 }
