@@ -41,9 +41,9 @@
             "url": "https://trt.daioncdn.net/trt-1/master.m3u8?app=web"
         },
         {
-            "name": "FB TV",
-            "slug": "fbtv",
-            "url": "https://www.fenerbahce.org/fenerbahcetv/canliyayin"
+            "name": "CNN TURK",
+            "slug": "cnnturk",
+            "url": "https://www.cnnturk.com/canli-yayin"
         },
         {
             "name": "Chips",
@@ -56,9 +56,9 @@
             "url": "https://www.tv2.com.tr/canli-yayin" 
         },
         {
-            "name": "Star TV",
-            "slug": "startv",
-            "url": "https://www.startv.com.tr/canli-yayin" 
+            "name": "Semerkand TV",
+            "slug": "semerkandtv",
+            "url": "https://www.semerkandtv.com.tr/canli-yayin" 
         }
     ]
 }
