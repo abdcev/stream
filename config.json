@@ -59,6 +59,11 @@
             "name": "Semerkand TV",
             "slug": "semerkandtv",
             "url": "https://www.semerkandtv.com.tr/canli-yayin" 
+        },
+        {
+            "name": "MericB",
+            "slug": "mericb",
+            "url": "https://kick.com/mericb" 
         }
     ]
 }
