@@ -1,12 +1,12 @@
 #EXTM3U
 #EXT-X-VERSION:2
 #EXT-X-STREAM-INF:BANDWIDTH=330000,CODECS="avc1.42001e,mp4a.40.2",
-https://live.duhnet.tv/S2/HLS_LIVE/cnnturknp/track_0_192/playlist.m3u8?&live=true&app=com.cnnturk&st=UfBTmgc1T1dfkNnvRez8dA&e=1791651641
+https://live.duhnet.tv/S2/HLS_LIVE/cnnturknp/track_0_192/playlist.m3u8?&live=true&app=com.cnnturk&st=xYHx0Rp_KS_dqwjqdGNdrg&e=1791666852
 #EXT-X-STREAM-INF:BANDWIDTH=490000,CODECS="avc1.42001e,mp4a.40.2",
-https://live.duhnet.tv/S2/HLS_LIVE/cnnturknp/track_1_320/playlist.m3u8?&live=true&app=com.cnnturk&st=UfBTmgc1T1dfkNnvRez8dA&e=1791651641
+https://live.duhnet.tv/S2/HLS_LIVE/cnnturknp/track_1_320/playlist.m3u8?&live=true&app=com.cnnturk&st=xYHx0Rp_KS_dqwjqdGNdrg&e=1791666852
 #EXT-X-STREAM-INF:BANDWIDTH=780000,CODECS="avc1.42001e,mp4a.40.2",
-https://live.duhnet.tv/S2/HLS_LIVE/cnnturknp/track_2_550/playlist.m3u8?&live=true&app=com.cnnturk&st=UfBTmgc1T1dfkNnvRez8dA&e=1791651641
+https://live.duhnet.tv/S2/HLS_LIVE/cnnturknp/track_2_550/playlist.m3u8?&live=true&app=com.cnnturk&st=xYHx0Rp_KS_dqwjqdGNdrg&e=1791666852
 #EXT-X-STREAM-INF:BANDWIDTH=1000000,CODECS="avc1.42001f,mp4a.40.2",
-https://live.duhnet.tv/S2/HLS_LIVE/cnnturknp/track_3_750/playlist.m3u8?&live=true&app=com.cnnturk&st=UfBTmgc1T1dfkNnvRez8dA&e=1791651641
+https://live.duhnet.tv/S2/HLS_LIVE/cnnturknp/track_3_750/playlist.m3u8?&live=true&app=com.cnnturk&st=xYHx0Rp_KS_dqwjqdGNdrg&e=1791666852
 #EXT-X-STREAM-INF:BANDWIDTH=1300000,CODECS="avc1.4d001f,mp4a.40.2",
-https://live.duhnet.tv/S2/HLS_LIVE/cnnturknp/track_4_1000/playlist.m3u8?&live=true&app=com.cnnturk&st=UfBTmgc1T1dfkNnvRez8dA&e=1791651641
+https://live.duhnet.tv/S2/HLS_LIVE/cnnturknp/track_4_1000/playlist.m3u8?&live=true&app=com.cnnturk&st=xYHx0Rp_KS_dqwjqdGNdrg&e=1791666852
